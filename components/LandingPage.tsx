@@ -11,7 +11,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onBegin }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-start pt-32 min-h-screen text-center px-4 w-full relative">
+    <div className="flex flex-col items-center justify-start pt-16 min-h-screen text-center px-4 w-full relative">
       {/* Background Ritual Logo Spinning - Larger and Faster */}
       <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none opacity-5 z-0">
         <img 
