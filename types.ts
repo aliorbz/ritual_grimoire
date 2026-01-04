@@ -21,6 +21,7 @@ export interface QuizProgress {
   topicId: string;
   currentIndex: number;
   answers: (number | null)[];
+  questionIndices: number[]; // Indices of the selected subset from the topic's master questions
   startTime: number; // timestamp
 }
 

@@ -5,9 +5,7 @@ import { UserSession, Topic } from '../types';
 import { TOPICS, Footer } from '../constants';
 import { supabase } from '../supabase';
 
-interface ResultsPageProps {
-  session: UserSession | null;
-}
+interface ResultsPageProps { session: UserSession | null; }
 
 const ResultsPage: React.FC<ResultsPageProps> = ({ session }) => {
   const navigate = useNavigate();
@@ -26,12 +24,7 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ session }) => {
 
   useEffect(() => {
     const submitScore = async () => {
-      // Guard check for supabase client existence
-      if (!supabase) {
-        console.warn("Supabase not configured. Score not saved to cloud ledger.");
-        return;
-      }
-
+      if (!supabase) return;
       if (result && !hasSubmitted && session?.displayName && session?.sessionId) {
         try {
           const { error } = await supabase.from('attempts').insert({
@@ -42,7 +35,6 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ session }) => {
             total_questions: result.total,
             time_taken_seconds: result.timeTaken
           });
-          
           if (error) throw error;
           setHasSubmitted(true);
         } catch (err) {
@@ -58,6 +50,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ session }) => {
   const topic = TOPICS.find(t => t.id === result.topicId);
   const percentage = Math.round((result.score / result.total) * 100);
   
+  // Reconstruct the specific questions used in this session
+  const sessionQuestions = result.questionIndices 
+    ? result.questionIndices.map((idx: number) => topic?.questions[idx])
+    : topic?.questions.slice(0, result.total); // Fallback for old results
+
   const getRank = (p: number) => {
     if (p === 100) return "Hierophant of Ritual";
     if (p >= 80) return "Adept Practitioner";
@@ -119,7 +116,8 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ session }) => {
 
         {showAnswers && (
           <div className="space-y-4">
-            {topic?.questions.map((q, idx) => {
+            {sessionQuestions.map((q: any, idx: number) => {
+              if (!q) return null;
               const isCorrect = result.answers[idx] === q.correctIndex;
               return (
                 <div key={idx} className={`p-4 border ${isCorrect ? 'border-[#39FF14]/20 bg-[#39FF14]/5' : 'border-white/5 bg-black'}`}>
@@ -149,26 +147,10 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ session }) => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 justify-center items-center py-12 border-t border-white/10 w-full">
-        <button 
-          onClick={() => navigate(`/quiz/${result.topicId}`)}
-          className="px-10 py-4 border border-white/20 text-white gothic text-xs tracking-widest hover:border-white transition-all w-full md:w-auto"
-        >
-          Attempt Again
-        </button>
-        <button 
-          onClick={() => navigate('/leaderboard')}
-          className="px-10 py-4 bg-[#39FF14] text-black gothic text-xs tracking-widest font-bold hover:brightness-110 transition-all w-full md:w-auto"
-        >
-          Open Ledger
-        </button>
-        <button 
-          onClick={() => navigate('/topics')}
-          className="px-10 py-4 text-gray-500 gothic text-xs tracking-widest hover:text-white transition-all w-full md:w-auto"
-        >
-          Return to Tomes
-        </button>
+        <button onClick={() => navigate(`/quiz/${result.topicId}`)} className="px-10 py-4 border border-white/20 text-white gothic text-xs tracking-widest hover:border-white transition-all w-full md:w-auto">Attempt Again</button>
+        <button onClick={() => navigate('/leaderboard')} className="px-10 py-4 bg-[#39FF14] text-black gothic text-xs tracking-widest font-bold hover:brightness-110 transition-all w-full md:w-auto">Open Ledger</button>
+        <button onClick={() => navigate('/topics')} className="px-10 py-4 text-gray-500 gothic text-xs tracking-widest hover:text-white transition-all w-full md:w-auto">Return to Tomes</button>
       </div>
-
       <Footer />
     </div>
   );

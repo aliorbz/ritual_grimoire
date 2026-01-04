@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TOPICS, HourglassIcon, Footer } from '../constants';
-import { UserSession, QuizProgress } from '../types';
+import { UserSession, QuizProgress, Question } from '../types';
 
 interface QuizInterfaceProps {
   session: UserSession | null;
@@ -16,11 +16,23 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
+  const [questionIndices, setQuestionIndices] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   const timerRef = useRef<any>(null);
+
+  // Helper to shuffle and pick 15
+  const getRandomIndices = (max: number, count: number): number[] => {
+    const indices = Array.from({ length: max }, (_, i) => i);
+    // Fisher-Yates Shuffle
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return indices.slice(0, count);
+  };
 
   useEffect(() => {
     if (!topic) {
@@ -40,6 +52,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
       } else {
         setCurrentIndex(saved.currentIndex);
         setAnswers(saved.answers);
+        setQuestionIndices(saved.questionIndices);
         setTimeLeft(remaining);
       }
     } else {
@@ -47,13 +60,20 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
     }
 
     function startFresh() {
+      const totalQuestionsPool = topic!.questions.length;
+      const targetCount = Math.min(15, totalQuestionsPool);
+      const indices = getRandomIndices(totalQuestionsPool, targetCount);
+
       setCurrentIndex(0);
-      setAnswers(new Array(topic!.questions.length).fill(null));
+      setAnswers(new Array(targetCount).fill(null));
+      setQuestionIndices(indices);
       setTimeLeft(topic!.timeLimit);
+
       localStorage.setItem(`ritual_progress_${topicId}`, JSON.stringify({
         topicId: topicId,
         currentIndex: 0,
-        answers: new Array(topic!.questions.length).fill(null),
+        answers: new Array(targetCount).fill(null),
+        questionIndices: indices,
         startTime: Date.now()
       }));
     }
@@ -109,7 +129,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
   };
 
   const handleNext = () => {
-    if (currentIndex < (topic?.questions.length || 0) - 1) {
+    if (currentIndex < questionIndices.length - 1) {
       const nextIndex = currentIndex + 1;
       setCurrentIndex(nextIndex);
       saveProgress(answers, nextIndex);
@@ -128,17 +148,22 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
 
   const handleComplete = async () => {
     setIsSubmitting(true);
+    
+    // Resolve which questions were actually used
+    const sessionQuestions = questionIndices.map(idx => topic!.questions[idx]);
+    
     const score = answers.reduce((acc, ans, idx) => {
-      return ans === topic?.questions[idx].correctIndex ? (acc as number) + 1 : (acc as number);
+      return ans === sessionQuestions[idx].correctIndex ? (acc as number) + 1 : (acc as number);
     }, 0);
 
     const result = {
       topicId: topicId,
       topicTitle: topic?.title,
       score,
-      total: topic?.questions.length,
+      total: sessionQuestions.length,
       timeTaken: (topic?.timeLimit || 0) - timeLeft,
       answers,
+      questionIndices, // Save indices so results page can display the correct review
       timestamp: new Date().toISOString()
     };
 
@@ -150,7 +175,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
     }, 1000);
   };
 
-  if (!topic) return null;
+  if (!topic || questionIndices.length === 0) return null;
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -158,7 +183,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
-  const currentQuestion = topic.questions[currentIndex];
+  const currentQuestion = topic.questions[questionIndices[currentIndex]];
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -171,7 +196,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
 
         <div className="text-center">
           <span className="text-[10px] uppercase tracking-widest text-gray-500 mb-1 block">Trial Step</span>
-          <span className="text-xl font-bold text-white">{currentIndex + 1} / {topic.questions.length}</span>
+          <span className="text-xl font-bold text-white">{currentIndex + 1} / {questionIndices.length}</span>
         </div>
 
         <div className={`flex flex-col items-end ${timeLeft < 30 ? 'animate-pulse' : ''}`}>
@@ -242,7 +267,7 @@ const QuizInterface: React.FC<QuizInterfaceProps> = ({ session, triggerNameModal
                 ? 'bg-transparent border border-white/5 text-white/10 cursor-not-allowed' 
                 : 'bg-transparent border border-[#39FF14] text-[#39FF14] hover:bg-[#39FF14] hover:text-black shadow-[0_0_10px_rgba(57,255,20,0.2)]'}`}
           >
-            {isSubmitting ? 'Summoning...' : currentIndex === topic.questions.length - 1 ? 'Final Seal' : 'Next Sigil →'}
+            {isSubmitting ? 'Summoning...' : currentIndex === questionIndices.length - 1 ? 'Final Seal' : 'Next Sigil →'}
           </button>
         </div>
       </div>

@@ -182,6 +182,171 @@ export const RITUAL_OVERVIEW_TOPIC: Topic = {
         "A decentralized, intelligent, and secure computational fabric"
       ],
       correctIndex: 3
+    },
+    {
+      id: 'q16',
+      text: "What does Ritual aim to optimize instead of only latency and throughput?",
+      options: [
+        "Validator rewards",
+        "Network fees",
+        "Expressive and expansive computation",
+        "Cross-chain bridges"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q17',
+      text: "According to the overview, why are performance improvements alone insufficient?",
+      options: [
+        "They increase centralization",
+        "They slow down innovation",
+        "They scale existing use cases without unlocking new ones",
+        "They reduce security"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q18',
+      text: "What risk does Ritual associate with adopting closed AI technologies?",
+      options: [
+        "Higher costs",
+        "Slower inference",
+        "Loss of neutrality and censorship resistance",
+        "Poor UX"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q19',
+      text: "Beyond AI, what other compute types does Ritual explicitly support?",
+      options: [
+        "Only DeFi-related computation",
+        "Storage-only workloads",
+        "ZK proofs, TEEs, and cross-chain state access",
+        "Gaming engines"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q20',
+      text: "What does Ritual mean by becoming the “schelling point” for web3?",
+      options: [
+        "The cheapest blockchain",
+        "The fastest execution layer",
+        "The natural coordination layer for compute across web3",
+        "The default NFT marketplace"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q21',
+      text: "How do other blockchains benefit from Ritual?",
+      options: [
+        "By migrating entirely to Ritual",
+        "By outsourcing consensus",
+        "By using Ritual for specialized compute needs",
+        "By sharing validators"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q22',
+      text: "Which type of blockchain would need Ritual’s prover network support?",
+      options: [
+        "Meme chains",
+        "Payment chains",
+        "High-performance chains requiring provers",
+        "Governance-only chains"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q23',
+      text: "What role does Ritual play for Rollup-as-a-Service platforms?",
+      options: [
+        "Hosting frontends",
+        "Managing token launches",
+        "Executing heterogeneous compute efficiently",
+        "Providing liquidity"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q24',
+      text: "How does Ritual approach data storage?",
+      options: [
+        "On-chain only",
+        "Off-chain only",
+        "Storage-agnostic across web2 and web3 systems",
+        "Centralized storage"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q25',
+      text: "What problem do Guardians solve in the Ritual network?",
+      options: [
+        "Validator slashing",
+        "Smart contract bugs",
+        "Allowing nodes to opt into execution while staying in consensus",
+        "Data compression"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q26',
+      text: "Why is Modular Computational Integrity important to Ritual?",
+      options: [
+        "It simplifies wallets",
+        "It removes trust assumptions",
+        "It enables opt-in guarantees across privacy, provenance, and integrity",
+        "It improves gas efficiency"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q27',
+      text: "What does Native Infernet Integration provide to Ritual nodes?",
+      options: [
+        "Faster block times",
+        "Cheaper gas fees",
+        "Seamless access to a compute oracle network",
+        "Centralized AI models"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q28',
+      text: "What does Verifiable Provenance ensure in Ritual?",
+      options: [
+        "Lower inference cost",
+        "Model anonymity",
+        "Immutable records of model origin and transformation",
+        "Faster deployment"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q29',
+      text: "What is the purpose of pricing and orchestration in Ritual’s architecture?",
+      options: [
+        "To maximize validator profit",
+        "To reduce hardware costs",
+        "To efficiently expose and manage all forms of compute",
+        "To simplify UI design"
+      ],
+      correctIndex: 2
+    },
+    {
+      id: 'q30',
+      text: "What does Ritual ultimately position itself as?",
+      options: [
+        "A developer toolkit",
+        "A blockchain for AI only",
+        "Infrastructure for decentralized, intelligent, and trustworthy computation",
+        "A rollup framework"
+      ],
+      correctIndex: 2
     }
   ]
 };
