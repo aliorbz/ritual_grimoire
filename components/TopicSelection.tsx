@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TOPICS, RuneIcon, Footer } from '../constants';
+import { TOPICS, Footer } from '../constants';
 import { UserSession, Topic } from '../types';
 
 interface TopicSelectionProps {
@@ -18,9 +18,13 @@ const TopicCard: React.FC<{ topic: Topic, onSelect: () => void }> = ({ topic, on
           : 'border-white/5 opacity-60 grayscale cursor-not-allowed'}`}
       onClick={topic.enabled ? onSelect : undefined}
     >
-      {/* Rune Decoration */}
-      <div className="absolute top-2 right-2 opacity-10 group-hover:opacity-30 transition-opacity">
-        <RuneIcon className="w-10 h-10 md:w-12 md:h-12 text-[#39FF14]" />
+      {/* Ritual Logo Decoration replaced the Star Rune */}
+      <div className="absolute top-4 right-4 transition-all duration-500 group-hover:drop-shadow-[0_0_8px_rgba(57,255,20,0.6)]">
+        <img 
+          src="https://i.ibb.co.com/XkCCS678/Picsart-26-01-12-16-48-17-683.png" 
+          alt="Ritual Sigil" 
+          className="w-10 h-10 md:w-12 md:h-12 object-contain opacity-20 group-hover:opacity-100 transition-opacity duration-500"
+        />
       </div>
 
       <div className="mb-4">
@@ -31,7 +35,7 @@ const TopicCard: React.FC<{ topic: Topic, onSelect: () => void }> = ({ topic, on
         )}
       </div>
 
-      <h3 className="text-xl md:text-2xl gothic text-white mb-3 group-hover:text-[#39FF14] transition-colors">{topic.title}</h3>
+      <h3 className="text-xl md:text-2xl gothic text-white mb-3 group-hover:text-[#39FF14] transition-colors pr-10">{topic.title}</h3>
       <p className="text-sm text-gray-400 mb-8 flex-grow leading-relaxed">{topic.description}</p>
 
       {topic.enabled && (
